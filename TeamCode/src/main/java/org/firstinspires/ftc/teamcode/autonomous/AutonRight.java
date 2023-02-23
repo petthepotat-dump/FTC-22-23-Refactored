@@ -25,6 +25,10 @@ public class AutonRight extends LinearOpMode {
     private OpenCvCamera camera;
     private String route;
 
+    // dashboard variables
+    public static double POS1X = 0.0, POS1Y = 1.8;
+    public static int MOVE1P;
+
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new MecanumChassis(hardwareMap);
@@ -52,9 +56,17 @@ public class AutonRight extends LinearOpMode {
         waitForStart();
         camera.setPipeline(poleDetection);
         closeIntake();
-        setArmPositionTiming(520,0.2,1000);
+        /*
+        setArmPositionTiming == wait a bit then turn on arm
+         */
+        // ----------------- Autonomous -----------------
+        // move to position 1 (the center of our cycle);
+        // do some resetting for position
+        setArmPosition(520, 0.2);
+        openIntake();
+
 //        goTo(0,1.5,0,1.2,50,0.04,2,true);
-        goTo(0.05,1.4,-45,1.2,50,0.04,2,true);
+        goTo(POS1X + 0.05,POS1Y + 0.02,-45,1.8,50,0.04,2,true);
         goTo(-0.18,1.55,-45,1.2,50,0.04,2,true);
 //        goToPole();
         setArmPositionWait(350,0.2);
@@ -106,6 +118,7 @@ public class AutonRight extends LinearOpMode {
                 break;
         }
     }
+
     private void closeIntake() {
         robot.intake.setPosition(0.75);
     }
@@ -124,22 +137,14 @@ public class AutonRight extends LinearOpMode {
         }
     }
     private void setArmPositionWait(int pos, double speed) {
-        robot.leftArm.setTargetPosition(pos);
-        robot.rightArm.setTargetPosition(pos);
-        robot.leftArm.setPower(speed);
-        robot.rightArm.setPower(speed);
-        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // move arm -- then wait untnil finished
+        setArmPosition(pos, speed);
         while (!isStopRequested() && robot.leftArm.isBusy()) sleep(10);
     }
     private void setArmPositionTiming(int pos, double speed, int delay) {
+        // wait -- them move
         sleep(delay);
-        robot.leftArm.setTargetPosition(pos);
-        robot.rightArm.setTargetPosition(pos);
-        robot.leftArm.setPower(speed);
-        robot.rightArm.setPower(speed);
-        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setArmPosition(pos, speed);
     }
     private void goToPole() {
         while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
@@ -152,5 +157,13 @@ public class AutonRight extends LinearOpMode {
             telemetry.update();
             sleep(10);
         }
+    }
+    private void setArmPosition(int pos, double speed){
+        robot.leftArm.setTargetPosition(pos);
+        robot.rightArm.setTargetPosition(pos);
+        robot.leftArm.setPower(speed);
+        robot.rightArm.setPower(speed);
+        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }

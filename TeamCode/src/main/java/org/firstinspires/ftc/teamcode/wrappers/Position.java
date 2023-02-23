@@ -7,7 +7,7 @@ public class Position {
     private MecanumChassis robot;
     private Position.PositionThread positionThread;
 
-    private double fr, fl, bl, br;
+    public double fr, fl, bl, br;
     public volatile double angle, x, y;
 
     public Position(MecanumChassis robot) {

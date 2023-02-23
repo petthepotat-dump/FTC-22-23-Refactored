@@ -8,9 +8,9 @@ public class Controller {
     private final double DEGREES_TO_RADIANS = Math.PI/180f;
     private final double MAX_VELOCITY = 3.6;
     private final double MIN_VELOCITY = 0.05;
-    private final double ACCELERATE = 0.5;
+    private final double ACCELERATE = 1.0;
 
-    private final double ANGLE_MAX_VELOCITY = 180;
+    private final double ANGLE_MAX_VELOCITY = 360;
     private final double ANGLE_MIN_VELOCITY = 2;
     private final double ANGLE_ACCELERATE = 25;
 

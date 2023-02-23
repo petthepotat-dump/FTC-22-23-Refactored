@@ -15,7 +15,9 @@ import org.firstinspires.ftc.teamcode.wrappers.Position;
 public class ChassisControlTest extends LinearOpMode {
     // we have (target) t values
     // and (actual) a values
-    public volatile static double tx, ty, ttheta, speed = 1.0, angleSpeed = 30.0, moveDZ = 1.0, angleDZ = 1.0;
+    public volatile static double tx, ty, ttheta, speed = 1.0, angleSpeed = 30.0, moveDZ = 0.04, angleDZ = 2.0;
+    public volatile static double moveDis, strafeDis;
+
     private MecanumChassis robot;
     private Position pos;
     private Controller controller;
@@ -32,15 +34,20 @@ public class ChassisControlTest extends LinearOpMode {
             For determining strafe + movement ratio (movement not usually necassary but could be tuned)
             - dashboard set target + speed + angleSpeed
          */
+        sleep(100);
+        dashboard.updateConfig();
+
         controller.goTo(tx, ty, ttheta, speed, angleSpeed, moveDZ, angleDZ, true);
-        while (!controller.finished) {
-            if (isStopRequested()) controller.stop();
+        while (opModeIsActive() && !controller.finished) {
+            telemetry.addData("tx", tx);
+            telemetry.addData("ty", ty);
             telemetry.addData("ax", pos.x);
             telemetry.addData("ay", pos.y);
             telemetry.addData("atheta", pos.angle);
             telemetry.addData("finished", controller.finished);
+            telemetry.addData("Ticks of FR", pos.fr);
             telemetry.update();
-
         }
+        controller.stop();
     }
 }

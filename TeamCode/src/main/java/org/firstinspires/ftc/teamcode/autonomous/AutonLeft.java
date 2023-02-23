@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,74 +10,86 @@ import org.firstinspires.ftc.teamcode.wrappers.Controller;
 import org.firstinspires.ftc.teamcode.wrappers.DetectPoleDisplay;
 import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
+import org.firstinspires.ftc.teamcode.wrappers.Utils;
 import org.firstinspires.ftc.teamcode.wrappers.Vision;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+@Config
 @Autonomous(name="Auton Left")
-public class AutonLeft extends LinearOpMode {
-    private MecanumChassis robot;
-    private Position pos;
-    private Controller control;
-    private Vision sleeveDetection;
-    private DetectPoleDisplay poleDetection;
-    private WebcamName webcamName;
-    private OpenCvCamera camera;
-    private String route;
+public class AutonLeft extends BaseAuto {
+
+    // dashboard variables
+    public volatile static double POS1X = 0.0, POS1Y = 1.3;
+    public volatile static int MOVE1P = 400;
+
+    public volatile static double POS2X = -0.66, POS2Y = POS1Y,
+                PIVOT1X = -0.5, PIVOT1Y = 1.4;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new MecanumChassis(hardwareMap);
-        pos = new Position(robot);
-        control = new Controller(robot, pos);
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcamName = hardwareMap.get(WebcamName.class, "Camera");
-        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
-        sleeveDetection = new Vision();
-        poleDetection = new DetectPoleDisplay();
-        camera.setPipeline(sleeveDetection);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                camera.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-            }
-            @Override
-            public void onError(int errorCode) {}
-        });
-        while (!isStarted()) {
-            telemetry.addData("route: ", sleeveDetection.route);
-            telemetry.update();
-        }
+        init(hardwareMap);
+
         route = sleeveDetection.route;
         waitForStart();
         camera.setPipeline(poleDetection);
-        closeIntake();
-
-        setArmPositionTiming(520,0.2,1000);
-        goTo(-0.05,1.19,45,1.2,50,0.04,2,true);
-        goTo(0.17,1.27,45,1.2,50,0.04,2,true);
-
-        setArmPositionWait(350,0.2);
+        
+        // ----------------- Autonomous -----------------;
+        // move to center position
+        setArmPosition(15, 0.2);
         openIntake();
-        setArmPositionWait(520,0.2);
-        goTo(-0.05,1.14,-20,0.6,180,0.08,15,false);
-        setArmPositionTiming(95,0.2,0);
-        goTo(-0.54,1.14,-90,0.6,180,0.04,2,true);
-        closeIntake();
-        sleep(300);
-        setArmPositionWait(125, 0.2);
-        setArmPositionTiming(520, 0.2, 0);
-        goTo(0.11,1.31,45,1.2,180,0.04,2,true);
-        setArmPositionWait(350, 0.2);
+        goTo(POS1X,  POS1Y, 45, 2.0, 200, 0.04, 2, true);
+        setArmPositionTiming(520, 0.4, MOVE1P);
+        // move towrads high junctino and place
+        goTo(POS1X + 0.2, POS1Y + 0.2, 45, 1.4, 100, 0.04, 2,  true);
+        setArmPositionTiming(400, 0.4, MOVE1P);
         openIntake();
-        setArmPositionWait(520,0.2);
-//        goTo(-0.05,1.17,-20,0.6,180,0.08,15,false);
-//        setArmPositionTiming(85,0.2,0);
-//        goTo(-0.55,1.17,-90,0.6,180, 0.04,2,true);
-//        closeIntake();
-//        sleep(300);
-//        setArmPositionWait(185, 0.2);
+        setArmPositionWait(520, 0.4);
+
+        new Exception("you're bad");
+        // next
+
+        // move towards left pylon stack
+        setArmPositionTiming(20, 0.2, 300);
+        goTo(POS2X, POS2Y, -90, 2.0, 200, 0.04, 2, true);
+
+        telemetry.addData("Stage", "CYCLE!");
+
+        // begin cycle when arrive at side pylon stack
+        Utils.PylonStackTracker ptracker = new Utils.PylonStackTracker();
+        Utils.TimerThread timer = new Utils.TimerThread(20 * 1000);
+        // intiial == at left side (arm down h = 20)
+        while(!timer.done){
+            // ------------- //
+            // move the robot cycle-wise as many times as possible
+            setArmPosition(ptracker.getPylonStackHeight(), 0.4);
+            closeIntake();
+            setArmPositionWait(100, 0.3);
+            // move back a bit + spin around -- then move diagonal towards junction
+            goTo(PIVOT1X, PIVOT1Y, 50, 1.4, 300, 0.04, 2, true);
+            setArmPositionTiming(520, 0.3, 400);
+            goTo(POS1X + 0.2, POS1Y + 0.2, 50, 1.8, 200, 0.04, 2, true);
+            // yeet cone down
+            setArmPositionTiming(400, 0.4, 400);
+            openIntake();
+            setArmPositionWait(520, 0.4);
+            // then move towards left pylon stack
+            setArmPositionTiming(20, 0.2, 300);
+            goTo(POS2X, POS2Y, -90, 1.7, 300, 0.04, 2, true);
+        }
+
+        new Exception("Stage 2 cleared");
+        // next
+
+        // endgame movement
+        telemetry.addData("route: ", route);
+        telemetry.update();
+
+        // removed endgame movement
+        route = "NONE";
+
         switch (route) {
             case "LEFT":
                 goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
@@ -103,8 +116,10 @@ public class AutonLeft extends LinearOpMode {
                 break;
         }
     }
+
+    
     private void closeIntake() {
-        robot.intake.setPosition(0.8);
+        robot.intake.setPosition(0.75);
     }
     private void openIntake() {
         robot.intake.setPosition(0.55);
@@ -120,23 +135,19 @@ public class AutonLeft extends LinearOpMode {
             sleep(10);
         }
     }
+    private void goToRel(double x, double y, double angle, double speed, double angleSpeed, double distanceDeadzone, double angleDeadzone, boolean velocityControl) {
+        goTo(pos.x + x, pos.y + y, pos.angle + angle, speed, angleSpeed, distanceDeadzone, angleDeadzone, velocityControl);
+    }
+
     private void setArmPositionWait(int pos, double speed) {
-        robot.leftArm.setTargetPosition(pos);
-        robot.rightArm.setTargetPosition(pos);
-        robot.leftArm.setPower(speed);
-        robot.rightArm.setPower(speed);
-        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // move arm -- then wait untnil finished
+        setArmPosition(pos, speed);
         while (!isStopRequested() && robot.leftArm.isBusy()) sleep(10);
     }
     private void setArmPositionTiming(int pos, double speed, int delay) {
+        // wait -- them move
         sleep(delay);
-        robot.leftArm.setTargetPosition(pos);
-        robot.rightArm.setTargetPosition(pos);
-        robot.leftArm.setPower(speed);
-        robot.rightArm.setPower(speed);
-        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setArmPosition(pos, speed);
     }
     private void goToPole() {
         while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
@@ -149,5 +160,13 @@ public class AutonLeft extends LinearOpMode {
             telemetry.update();
             sleep(10);
         }
+    }
+    private void setArmPosition(int pos, double speed){
+        robot.leftArm.setTargetPosition(pos);
+        robot.rightArm.setTargetPosition(pos);
+        robot.leftArm.setPower(speed);
+        robot.rightArm.setPower(speed);
+        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
