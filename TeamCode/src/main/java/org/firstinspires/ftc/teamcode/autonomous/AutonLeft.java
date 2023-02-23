@@ -23,6 +23,7 @@ public class AutonLeft extends BaseAuto {
     // dashboard variables
     public volatile static double POS1X = 0.0, POS1Y = 1.15;
     public volatile static int MOVE1P = 400, ARM1P = 600;
+    public volatile static long PARKINGTIME = 4 * 10000;
 
     public volatile static double POS2X = -0.66, POS2Y = POS1Y,
                 PIVOT1X = -0.5, PIVOT1Y = POS2Y;
@@ -36,6 +37,9 @@ public class AutonLeft extends BaseAuto {
 
         route = sleeveDetection.route;
         waitForStart();
+
+        Utils.TimerThread timer = new Utils.TimerThread(PARKINGTIME);
+
         closeIntake();
         camera.setPipeline(poleDetection);
         
@@ -64,7 +68,6 @@ public class AutonLeft extends BaseAuto {
 
         // begin cycle when arrive at side pylon stack
         Utils.PylonStackTracker ptracker = new Utils.PylonStackTracker();
-        Utils.TimerThread timer = new Utils.TimerThread(20 * 1000);
         // intiial == at left side (arm down h = 20)
         while(!timer.done){
             // ------------- //

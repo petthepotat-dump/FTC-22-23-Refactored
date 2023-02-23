@@ -27,6 +27,7 @@ public class Utils {
         private Timer timer;
         private long target;
         public boolean done;
+        private static long AUTON_TIME = 30*1000;
         public TimerThread(long targetTime){
             timer = new Timer();
             target = targetTime;
@@ -38,7 +39,7 @@ public class Utils {
         @Override
         public void run() {
             try {
-                while (timer.timePassedAbs() < target) {
+                while (AUTON_TIME - timer.timePassedAbs() > target) {
                     sleep(10);
                 }
             } catch (InterruptedException e) {
