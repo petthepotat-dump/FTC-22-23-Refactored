@@ -21,11 +21,13 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 public class AutonLeft extends BaseAuto {
 
     // dashboard variables
-    public volatile static double POS1X = 0.0, POS1Y = 1.3;
-    public volatile static int MOVE1P = 400;
+    public volatile static double POS1X = 0.0, POS1Y = 1.24;
+    public volatile static int MOVE1P = 400, ARM1P = 600;
 
     public volatile static double POS2X = -0.66, POS2Y = POS1Y,
-                PIVOT1X = -0.5, PIVOT1Y = 1.4;
+                PIVOT1X = -0.5, PIVOT1Y = POS2Y;
+
+    public volatile static int STAGES = 0;
 
 
     @Override
@@ -34,21 +36,23 @@ public class AutonLeft extends BaseAuto {
 
         route = sleeveDetection.route;
         waitForStart();
+        closeIntake();
         camera.setPipeline(poleDetection);
         
         // ----------------- Autonomous -----------------;
         // move to center position
-        setArmPosition(15, 0.2);
-        openIntake();
+        setArmPositionTiming(150, 0.2, 900); // arm1p
+
+        if (STAGES < 1) return;
         goTo(POS1X,  POS1Y, 45, 2.0, 200, 0.04, 2, true);
         setArmPositionTiming(520, 0.4, MOVE1P);
         // move towrads high junctino and place
-        goTo(POS1X + 0.2, POS1Y + 0.2, 45, 1.4, 100, 0.04, 2,  true);
+        goTo(POS1X + 0.2, POS1Y + 0.1, 45, 1.4, 100, 0.04, 2,  true);
         setArmPositionTiming(400, 0.4, MOVE1P);
         openIntake();
         setArmPositionWait(520, 0.4);
 
-        new Exception("you're bad");
+        if (STAGES < 2) return;
         // next
 
         // move towards left pylon stack
@@ -80,7 +84,7 @@ public class AutonLeft extends BaseAuto {
             goTo(POS2X, POS2Y, -90, 1.7, 300, 0.04, 2, true);
         }
 
-        new Exception("Stage 2 cleared");
+        if(STAGES < 3) return;
         // next
 
         // endgame movement
