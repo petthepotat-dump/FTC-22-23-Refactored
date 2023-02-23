@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.wrappers;
 
 public class Position {
     private static final double STRAFE_RATIO = 678f/892f;
-    private static final double TICKS_TO_METERS = 1.3*0.38/658f;
+//    private static final double STRAFE_RATIO = 1.0f;
+    private static final double TICKS_TO_METERS = 1.3 * 0.38f/658f;
+//    private static final double TICKS_TO_METERS = 2.676731f*4f/10000f;
     private static final double DEGREES_TO_RADIANS = Math.PI/180f;
     private MecanumChassis robot;
     private Position.PositionThread positionThread;
