@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.wrappers.Position;
 
 @Config
 @TeleOp(name="ArmConfig")
-
 public class ArmControlTest extends LinearOpMode {
     private MecanumChassis robot;
     private Position pos;
@@ -33,6 +32,7 @@ public class ArmControlTest extends LinearOpMode {
         robot.leftArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         dashboard.updateConfig();
         waitForStart();
+        // pretty sure pid was too powerful -- but could have potential if fine tuned
         while (!isStopRequested()) {
             int armPos = robot.leftArm.getCurrentPosition();
             controller.setPID(p, i, d);
