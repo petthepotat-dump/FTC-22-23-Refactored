@@ -21,7 +21,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 public class AutonLeft extends BaseAuto {
 
     // dashboard variables
-    public volatile static double POS1X = 0.0, POS1Y = 1.24;
+    public volatile static double POS1X = 0.0, POS1Y = 1.15;
     public volatile static int MOVE1P = 400, ARM1P = 600;
 
     public volatile static double POS2X = -0.66, POS2Y = POS1Y,
@@ -39,27 +39,28 @@ public class AutonLeft extends BaseAuto {
         closeIntake();
         camera.setPipeline(poleDetection);
         
-        // ----------------- Autonomous -----------------;
+        // ----------------- Autonomous ----------------- //
         // move to center position
         setArmPositionTiming(150, 0.2, 900); // arm1p
 
         if (STAGES < 1) return;
+        setArmPositionTiming(520, 0.05, MOVE1P);
         goTo(POS1X,  POS1Y, 45, 2.0, 200, 0.04, 2, true);
-        setArmPositionTiming(520, 0.4, MOVE1P);
         // move towrads high junctino and place
-        goTo(POS1X + 0.2, POS1Y + 0.1, 45, 1.4, 100, 0.04, 2,  true);
-        setArmPositionTiming(400, 0.4, MOVE1P);
+        goTo(POS1X + 0.1, POS1Y + 0.1, 45, 1.4, 100, 0.04, 2,  true);
+        setArmPositionTiming(400, 0.2, MOVE1P);
         openIntake();
         setArmPositionWait(520, 0.4);
-
-        if (STAGES < 2) return;
-        // next
 
         // move towards left pylon stack
         setArmPositionTiming(20, 0.2, 300);
         goTo(POS2X, POS2Y, -90, 2.0, 200, 0.04, 2, true);
 
         telemetry.addData("Stage", "CYCLE!");
+
+        if (STAGES < 2) return;
+        // next
+
 
         // begin cycle when arrive at side pylon stack
         Utils.PylonStackTracker ptracker = new Utils.PylonStackTracker();
