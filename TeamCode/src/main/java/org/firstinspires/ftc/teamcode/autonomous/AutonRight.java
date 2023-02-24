@@ -146,18 +146,18 @@ public class AutonRight extends LinearOpMode {
         sleep(delay);
         setArmPosition(pos, speed);
     }
-    private void goToPole() {
-        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
-            robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            telemetry.addData("error: ", poleDetection.error);
-            telemetry.addData("widthError: ", poleDetection.widthError);
-            telemetry.update();
-            sleep(10);
-        }
-    }
+//    private void goToPole() {
+//        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
+//            robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            telemetry.addData("error: ", poleDetection.error);
+//            telemetry.addData("widthError: ", poleDetection.widthError);
+//            telemetry.update();
+//            sleep(10);
+//        }
+//    }
     private void setArmPosition(int pos, double speed){
         robot.leftArm.setTargetPosition(pos);
         robot.rightArm.setTargetPosition(pos);

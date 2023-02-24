@@ -98,16 +98,16 @@ public class teleop extends LinearOpMode {
         robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-    private void goToPole() {
-        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
-            robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            telemetry.addData("error: ", poleDetection.error);
-            telemetry.addData("widthError: ", poleDetection.widthError);
-            telemetry.update();
-            sleep(10);
-        }
-    }
+//    private void goToPole() {
+//        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
+//            robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            telemetry.addData("error: ", poleDetection.error);
+//            telemetry.addData("widthError: ", poleDetection.widthError);
+//            telemetry.update();
+//            sleep(10);
+//        }
+//    }
 }

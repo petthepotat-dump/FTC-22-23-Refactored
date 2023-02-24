@@ -28,7 +28,7 @@ public class AutonLeft extends BaseAuto {
     public volatile static double POS2X = -0.66, POS2Y = POS1Y,
                 PIVOT1X = -0.5, PIVOT1Y = POS2Y;
 
-    public volatile static int STAGES = 0;
+    public volatile static int STAGES = 10;
 
 
     @Override
@@ -42,24 +42,20 @@ public class AutonLeft extends BaseAuto {
 
         closeIntake();
         camera.setPipeline(poleDetection);
-        
+
         // ----------------- Autonomous ----------------- //
         // move to center position
         setArmPositionTiming(150, 0.2, 900); // arm1p
 
         if (STAGES < 1) return;
         setArmPositionTiming(520, 0.05, MOVE1P);
-        goTo(POS1X,  POS1Y, 45, 2.0, 200, 0.04, 2, true);
-        // move towrads high junctino and place
-        goTo(POS1X + 0.1, POS1Y + 0.1, 45, 1.4, 100, 0.04, 2,  true);
-        setArmPositionTiming(400, 0.2, MOVE1P);
+        goTo(POS1X,  POS1Y-0.2, 30, 2.0, 200, 0.04, 2, true);
+
+
+        goToPole(false);
+
+        setArmPositionWait(400, 0.2);
         openIntake();
-        setArmPositionWait(520, 0.4);
-
-        // move towards left pylon stack
-        setArmPositionTiming(20, 0.2, 300);
-        goTo(POS2X, POS2Y, -90, 2.0, 200, 0.04, 2, true);
-
         telemetry.addData("Stage", "CYCLE!");
 
         if (STAGES < 2) return;
@@ -67,26 +63,36 @@ public class AutonLeft extends BaseAuto {
 
 
         // begin cycle when arrive at side pylon stack
-        Utils.PylonStackTracker ptracker = new Utils.PylonStackTracker();
+//        Utils.PylonStackTracker ptracker = new Utils.PylonStackTracker();
         // intiial == at left side (arm down h = 20)
-        while(!timer.done){
+        int heightOfStack = 20*5;
+        while(heightOfStack > 0) {
+            // then move towards left pylon stack
+            setArmPosition(200,0.2);
+            goTo(POS2X+0.35, POS2Y, -90, 1.7, 300, 0.04, 2, true);
+            goToCone();
+            setArmPositionTiming(heightOfStack, 0.2, 300);
+            goTo(pos.x-0.21, pos.y, -90, 0.4, 1, 0.03, 5, true);
+
             // ------------- //
             // move the robot cycle-wise as many times as possible
-            setArmPosition(ptracker.getPylonStackHeight(), 0.4);
+//            setArmPosition(ptracker.getPylonStackHeight(), 0.4);
             closeIntake();
             setArmPositionWait(100, 0.3);
             // move back a bit + spin around -- then move diagonal towards junction
-            goTo(PIVOT1X, PIVOT1Y, 50, 1.4, 300, 0.04, 2, true);
             setArmPositionTiming(520, 0.3, 400);
-            goTo(POS1X + 0.2, POS1Y + 0.2, 50, 1.8, 200, 0.04, 2, true);
+            goTo(PIVOT1X, PIVOT1Y, 50, 1.4, 300, 0.04, 2, true);
+
+            if (heightOfStack < 3*20) {
+                goToPole(true);
+            } else {
+                goToPole(false);
+            }
             // yeet cone down
-            setArmPositionTiming(400, 0.4, 400);
+            setArmPositionWait(400, 0.4);
             openIntake();
-            setArmPositionWait(520, 0.4);
-            // then move towards left pylon stack
-            setArmPositionTiming(20, 0.2, 300);
-            goTo(POS2X, POS2Y, -90, 1.7, 300, 0.04, 2, true);
-        }
+            heightOfStack -= 20;
+         }
 
         if(STAGES < 3) return;
         // next
@@ -157,18 +163,18 @@ public class AutonLeft extends BaseAuto {
         sleep(delay);
         setArmPosition(pos, speed);
     }
-    private void goToPole() {
-        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
-            robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-            telemetry.addData("error: ", poleDetection.error);
-            telemetry.addData("widthError: ", poleDetection.widthError);
-            telemetry.update();
-            sleep(10);
-        }
-    }
+//    private void goToPole() {
+//        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
+//            robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
+//            telemetry.addData("error: ", poleDetection.error);
+//            telemetry.addData("widthError: ", poleDetection.widthError);
+//            telemetry.update();
+//            sleep(10);
+//        }
+//    }
     private void setArmPosition(int pos, double speed){
         robot.leftArm.setTargetPosition(pos);
         robot.rightArm.setTargetPosition(pos);
@@ -176,5 +182,50 @@ public class AutonLeft extends BaseAuto {
         robot.rightArm.setPower(speed);
         robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+
+    private void move(double fr, double fl, double br, double bl) {
+        robot.fr.setPower(fr);
+        robot.fl.setPower(fl);
+        robot.br.setPower(br);
+        robot.bl.setPower(bl);
+    }
+    private void goToCone() {
+        camera.setPipeline(detection);
+        while (detection.x<118 || detection.x>128 || detection.width<150) {
+            double error = 123-detection.x, distanceError = detection.width-150;
+            double power = error/350, distancePower = distanceError/350;
+            move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
+            telemetry.addData("error", error);
+            telemetry.addData("distance_error", distanceError);
+            telemetry.update();
+            sleep(100);
+        }
+    }
+    private void goToPole(boolean cone) {
+        camera.setPipeline(poleDetection);
+        poleDetection.poleHasCone(cone);
+        if (cone) {
+            while (poleDetection.x<118 || poleDetection.x>128 || poleDetection.width<150) {
+                double error = 123-poleDetection.x, distanceError = poleDetection.width-150;
+                double power = error/350, distancePower = distanceError/350;
+                move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
+                telemetry.addData("error", error);
+                telemetry.addData("distance_error", distanceError);
+                telemetry.update();
+                sleep(100);
+            }
+        } else {
+            while (poleDetection.x<97 || poleDetection.x>107 || poleDetection.width<65) {
+                double error = 102-poleDetection.x, distanceError = poleDetection.width-65;
+                double power = error/350, distancePower = distanceError/350;
+                move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
+                telemetry.addData("error", error);
+                telemetry.addData("distance_error", distanceError);
+                telemetry.update();
+                sleep(100);
+            }
+        }
     }
 }
