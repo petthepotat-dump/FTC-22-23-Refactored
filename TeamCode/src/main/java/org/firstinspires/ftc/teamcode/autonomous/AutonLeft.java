@@ -67,9 +67,11 @@ public class AutonLeft extends BaseAuto {
         // intiial == at left side (arm down h = 20)
         int heightOfStack = 20*5;
         while(heightOfStack > 0) {
+            // TODO I THINK WE NEED THIS
+            goTo(PIVOT1X,PIVOT1Y, 0, 0.2, 100, 0.04, 2, true);
             // then move towards left pylon stack
             setArmPosition(200,0.2);
-            goTo(POS2X+0.35, POS2Y, -90, 1.7, 300, 0.04, 2, true);
+            goTo(POS2X+0.35, POS2Y, -90, 1.7, 100/*this was 300 and i think that breaks it*/, 0.04, 2, true);
             goToCone();
             setArmPositionTiming(heightOfStack, 0.2, 300);
             goTo(pos.x-0.21, pos.y, -90, 0.4, 1, 0.03, 5, true);
