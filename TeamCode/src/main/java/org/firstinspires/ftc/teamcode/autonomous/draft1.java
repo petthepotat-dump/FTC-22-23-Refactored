@@ -13,14 +13,19 @@ public class draft1 extends BaseAuto {
         Utils.Timer timer = new Utils.Timer();
 
         // ===== step 1 - place 1st cone =====
+        // TODO -- update wiht darren code
         closeIntake();
         setArmPositionTiming(520, 0.2, 1000);
-        goTo(0, 1.12, 45, 2.3, 90, 0.12, 10, true);
+        goTo(0.05, 1.14, 45, 2.3, 90, 0.12, 10, true);
         goToPole(false);
         setArmPositionWait(420, 0.3);
         openIntake();
 
-//        pos.updatePos(0.2, 1.2);
+        // =====
+
+        // alignments
+        goTo(-0.05, 1.14, 45, 2.6, 90, 0.12, 10, true);
+
         //  ===== cycle =====
         // starting at (0, 1.2)
         // ======
@@ -30,20 +35,20 @@ public class draft1 extends BaseAuto {
         Utils.TimerThread timerThread = new Utils.TimerThread(10000);
         while (count > 0 && !timerThread.done){
             // === go cycle speed -- go towards cone stack
-            goTo(-0.4, 1.0, -90, 2.3, 90, 0.12, 9, true);
+            goTo(-0.4, 1.14, -90, 2.3, 90, 0.12, 9, true);
             goToCone();
 
             // approaching stack
             goToRel(-0.3, -0.1, pos.angle - -90, 0.5, 0, 0.12, 9, true);
             openIntake();
             setArmPosition(stack - cone * count, 0.1);
-            goTo(-0.4, 1.2, -90, 0.5, 0, 0.12, 9, true);
+            goTo(-0.4, 1.14, -90, 0.5, 0, 0.12, 9, true);
             closeIntake();
             setArmPosition(stack + 50, 0.2);
             goToRel(0.2, 0, 0, 0.5, 0, 0.12, 9, true);
 
             // move and arm up
-            goTo(0, 1.2, 0, 0.5, 0, 0.12, 9, true);
+            goTo(0, 1.14, 0, 0.5, 0, 0.12, 9, true);
             setArmPositionTiming(520, 0.2, 1000);
 
             // place
@@ -61,18 +66,15 @@ public class draft1 extends BaseAuto {
             case "LEFT":
                 goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
                 setArmPositionTiming(0, 0.2, 0);
-                goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
                 break;
             case "CENTER":
                 goTo(0,1.35,0,1.8,200,0.04,15,true);
                 setArmPositionTiming(0, 0.2, 0);
-                goTo(0,0.9,0,1.2,150,0.04,2,true);
                 break;
             case "RIGHT":
                 setArmPositionTiming(520, 0.2, 0);
                 goTo(0.6,1.4,0,1.8,200,0.04,15,true);
                 setArmPositionTiming(0, 0.2, 0);
-                goTo(0.6,0.9,0,1.2,150,0.04,2,true);
                 break;
             default:
                 telemetry.addData("OH SHIT!","WE FUCKED UP!");
@@ -80,7 +82,6 @@ public class draft1 extends BaseAuto {
                 // defualt to left side
                 goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
                 setArmPositionTiming(0, 0.2, 0);
-                goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
                 break;
         }
 
