@@ -47,43 +47,8 @@ public class draft1 extends BaseAuto {
             setArmPositionTiming(520, 0.2, 1000);
 
             // place
-            goToPole(false);
-            setArmPositionWait(420, 0.3);
-            openIntake();
+            goToPole(true);
         }
-
-        // then go park
-        // since movement range is always within y = 1.2 and x = (-0.4, 0.2)
-        // end game stuff
-        telemetry.addData("ROUTE", route);
-
-        switch (route) {
-            case "LEFT":
-                goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
-                setArmPositionTiming(0, 0.2, 0);
-                goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
-                break;
-            case "CENTER":
-                goTo(0,1.35,0,1.8,200,0.04,15,true);
-                setArmPositionTiming(0, 0.2, 0);
-                goTo(0,0.9,0,1.2,150,0.04,2,true);
-                break;
-            case "RIGHT":
-                setArmPositionTiming(520, 0.2, 0);
-                goTo(0.6,1.4,0,1.8,200,0.04,15,true);
-                setArmPositionTiming(0, 0.2, 0);
-                goTo(0.6,0.9,0,1.2,150,0.04,2,true);
-                break;
-            default:
-                telemetry.addData("OH SHIT!","WE FUCKED UP!");
-                telemetry.update();
-                // defualt to left side
-                goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
-                setArmPositionTiming(0, 0.2, 0);
-                goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
-                break;
-        }
-
 
     }
 }
