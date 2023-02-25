@@ -17,9 +17,9 @@ public class Utils {
             delta = end - start;
             start = end;
         }
-        public long timePassedAbs(){
+        public int timePassedAbs(){
             update();
-            return (end - cstart);
+            return (int) (end - cstart);
         }
     }
 
@@ -33,7 +33,7 @@ public class Utils {
             target = targetTime;
             done = false;
             // start timer
-            run();
+            start();
         }
 
         @Override
@@ -42,23 +42,21 @@ public class Utils {
                 while (AUTON_TIME - timer.timePassedAbs() > target) {
                     sleep(10);
                 }
-            } catch (InterruptedException e) {
-            }
+            } catch (InterruptedException e) {}
             done = true;
         }
     }
 
 
     public static class PylonStackTracker{
-        int left = 5, base = 10, pheight = 18;
+        int stack = 28, counter = 5, cone = 5;
         public PylonStackTracker(){
-
         }
         public void removePylon(){
-            left--;
+            counter--;
         }
         public int getPylonStackHeight(){
-            return (base + (left-1) * pheight);
+            return stack - counter * cone;
         }
 
     }

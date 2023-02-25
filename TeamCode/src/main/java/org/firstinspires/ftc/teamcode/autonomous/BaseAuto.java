@@ -71,6 +71,9 @@ public abstract class BaseAuto extends LinearOpMode {
             sleep(10);
         }
     }
+    public void goToRel(double x, double y, double angle, double speed, double angleSpeed, double distanceDeadzone, double angleDeadzone, boolean velocityControl) {
+        goTo(pos.x+x, pos.y+y, pos.angle+angle, speed, angleSpeed, distanceDeadzone, angleDeadzone, velocityControl);
+    }
     public void setArmPositionWait(int pos, double speed) {
         setArmPosition(pos, speed);
         while (!isStopRequested() && robot.leftArm.isBusy()) sleep(10);
