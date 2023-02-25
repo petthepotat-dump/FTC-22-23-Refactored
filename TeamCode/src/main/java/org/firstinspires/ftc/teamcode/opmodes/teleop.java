@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.wrappers.Controller;
 import org.firstinspires.ftc.teamcode.wrappers.DetectPoleDisplay;
 import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
+import org.firstinspires.ftc.teamcode.wrappers.Utils;
 import org.firstinspires.ftc.teamcode.wrappers.Vision;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -25,6 +26,8 @@ public class teleop extends LinearOpMode {
     private DetectPoleDisplay poleDetection;
     private WebcamName webcamName;
     private OpenCvCamera camera;
+    private Utils.RotateWithTrackpad rotateWithTrackpad;
+
     private double clamp(double min, double max, double val) {
         if (val<min) return min;
         else if (val>max) return max;
@@ -32,6 +35,7 @@ public class teleop extends LinearOpMode {
     }
     @Override
     public void runOpMode() throws InterruptedException {
+        rotateWithTrackpad = new Utils.RotateWithTrackpad(new Utils.TrackPad(gamepad1));
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
         int currentArmPosition=0;
@@ -59,6 +63,11 @@ public class teleop extends LinearOpMode {
             telemetry.update();
             double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x, ry = gamepad2.right_stick_y;
             double dn = 0.6/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
+            double rotation = rotateWithTrackpad.getMoveX() / 30;
+            // rotating
+            rx += rotation;
+            // strafing
+            // lx += rotation;
             robot.fr.setPower((ly+lx+0.7*rx)*dn);
             robot.fl.setPower((ly-lx-0.7*rx)*dn);
             robot.br.setPower((ly-lx+0.7*rx)*dn);

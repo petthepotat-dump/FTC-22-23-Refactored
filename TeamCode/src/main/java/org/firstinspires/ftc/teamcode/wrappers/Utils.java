@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.wrappers;
 
+import com.qualcomm.robotcore.hardware.Gamepad;
+
 import java.util.Timer;
 
 public class Utils {
@@ -61,4 +63,32 @@ public class Utils {
 
     }
 
+    public static class TrackPad {
+        private Gamepad gamepad;
+        public TrackPad(Gamepad gamepad){
+            this.gamepad = gamepad;
+        }
+        public double getX1(){
+            // trackpad distance
+            return gamepad.touchpad_finger_1_x;
+        }
+        public double getY1(){
+            // trackpad distance
+            return gamepad.touchpad_finger_1_y;
+        }
+    }
+
+    public static class RotateWithTrackpad{
+        private static double center = 0;
+        TrackPad trackPad;
+        private double x1;
+        public RotateWithTrackpad(TrackPad trackPad){
+            this.trackPad = trackPad;
+        }
+        public double getMoveX(){
+            x1 = trackPad.getX1();
+            // assuming center = 0
+            return (center - x1);
+        }
+    }
 }
