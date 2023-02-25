@@ -114,8 +114,7 @@ public abstract class BaseAuto extends LinearOpMode {
         if (cone) {
             while (poleDetection.x<118 || poleDetection.x>128 || poleDetection.width<150) {
                 double error = 123-poleDetection.x, distanceError = poleDetection.width-150;
-                double power = error/350;
-                double distancePower = clamp(distanceError/300, 0.07, 0.4);
+                double power = error/350, distancePower = distanceError/300;
                 move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
                 telemetry.addData("error", error);
                 telemetry.addData("distance_error", distanceError);
@@ -125,8 +124,7 @@ public abstract class BaseAuto extends LinearOpMode {
         } else {
             while (poleDetection.x<97 || poleDetection.x>107 || poleDetection.width<65) {
                 double error = 102-poleDetection.x, distanceError = poleDetection.width-65;
-                double power = error/350;
-                double distancePower = clamp(distanceError/300, 0.07, 0.4);
+                double power = error/350, distancePower = distanceError/300;
                 move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
                 telemetry.addData("error", error);
                 telemetry.addData("distance_error", distanceError);
@@ -134,9 +132,6 @@ public abstract class BaseAuto extends LinearOpMode {
                 sleep(100);
             }
         }
-    }
-    public static double clamp(double val, double min, double max){
-        return Math.max(min, Math.min(max, val));
     }
     @Override
     public abstract void runOpMode() throws InterruptedException;
