@@ -12,6 +12,30 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.List;
 
 public class DetectCone extends OpenCvPipeline {
+
+    /*
+         BLUECONE = [
+   5   │     (114, 40, 40),
+   6   │     (126, 255, 255)
+   7   │ ]
+   8   │ REDCONE = [
+   9   │     (0, 40, 40),
+  10   │     (5, 255, 255),
+  11   │     (175, 40, 40),
+  12   │     (180, 255, 255)
+  13   │ ]
+  14   │ POS1 = [
+  15   │     (2, 40, 40),
+  16   │     (12, 255, 255)
+  17   │ ]
+  18   │ POS2 = [
+  19   │     (60, 40, 40),
+  20   │     (70, 255, 255)
+  21   │ ]
+  22   │ POS3 = [
+  23   │     (150, 40, 40),
+  24   │     (160, 255, 255)
+     */
     private static final Scalar
         lowerBlue = new Scalar(100, 100, 100),
         upperBlue = new Scalar(120, 255, 255),
