@@ -33,7 +33,7 @@ public class AutonLeft extends BaseAuto {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        init(hardwareMap);
+        init(hardwareMap, true);
 
         route = sleeveDetection.route;
         waitForStart();
@@ -130,104 +130,6 @@ public class AutonLeft extends BaseAuto {
                 setArmPositionTiming(0, 0.2, 0);
                 goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
                 break;
-        }
-    }
-
-    
-    private void closeIntake() {
-        robot.intake.setPosition(0.75);
-    }
-    private void openIntake() {
-        robot.intake.setPosition(0.55);
-    }
-    private void goTo(double x, double y, double angle, double speed, double angleSpeed, double distanceDeadzone, double angleDeadzone, boolean velocityControl) {
-        control.goTo(x, y, angle, speed, angleSpeed, distanceDeadzone, angleDeadzone, velocityControl);
-        while (!control.finished) {
-            if (isStopRequested()) control.stop();
-            telemetry.addData("Angle: ", pos.angle);
-            telemetry.addData("X: ", pos.x);
-            telemetry.addData("Y: ", pos.y);
-            telemetry.update();
-            sleep(10);
-        }
-    }
-    private void goToRel(double x, double y, double angle, double speed, double angleSpeed, double distanceDeadzone, double angleDeadzone, boolean velocityControl) {
-        goTo(pos.x + x, pos.y + y, pos.angle + angle, speed, angleSpeed, distanceDeadzone, angleDeadzone, velocityControl);
-    }
-
-    private void setArmPositionWait(int pos, double speed) {
-        // move arm -- then wait untnil finished
-        setArmPosition(pos, speed);
-        while (!isStopRequested() && robot.leftArm.isBusy()) sleep(10);
-    }
-    private void setArmPositionTiming(int pos, double speed, int delay) {
-        // wait -- them move
-        sleep(delay);
-        setArmPosition(pos, speed);
-    }
-//    private void goToPole() {
-//        while (!isStopRequested() && (!(Math.abs(poleDetection.widthError) < 4 && Math.abs(poleDetection.error) < 5))) {
-//            robot.fl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-//            robot.fr.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-//            robot.bl.setPower(-poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-//            robot.br.setPower(poleDetection.error * 0.002+poleDetection.widthError * 0.01);
-//            telemetry.addData("error: ", poleDetection.error);
-//            telemetry.addData("widthError: ", poleDetection.widthError);
-//            telemetry.update();
-//            sleep(10);
-//        }
-//    }
-    private void setArmPosition(int pos, double speed){
-        robot.leftArm.setTargetPosition(pos);
-        robot.rightArm.setTargetPosition(pos);
-        robot.leftArm.setPower(speed);
-        robot.rightArm.setPower(speed);
-        robot.leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-
-
-    private void move(double fr, double fl, double br, double bl) {
-        robot.fr.setPower(fr);
-        robot.fl.setPower(fl);
-        robot.br.setPower(br);
-        robot.bl.setPower(bl);
-    }
-    private void goToCone() {
-        camera.setPipeline(detection);
-        while (detection.x<118 || detection.x>128 || detection.width<150) {
-            double error = 123-detection.x, distanceError = detection.width-150;
-            double power = error/350, distancePower = distanceError/350;
-            move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
-            telemetry.addData("error", error);
-            telemetry.addData("distance_error", distanceError);
-            telemetry.update();
-            sleep(100);
-        }
-    }
-    private void goToPole(boolean cone) {
-        camera.setPipeline(poleDetection);
-        poleDetection.poleHasCone(cone);
-        if (cone) {
-            while (poleDetection.x<118 || poleDetection.x>128 || poleDetection.width<150) {
-                double error = 123-poleDetection.x, distanceError = poleDetection.width-150;
-                double power = error/350, distancePower = distanceError/350;
-                move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
-                telemetry.addData("error", error);
-                telemetry.addData("distance_error", distanceError);
-                telemetry.update();
-                sleep(100);
-            }
-        } else {
-            while (poleDetection.x<97 || poleDetection.x>107 || poleDetection.width<65) {
-                double error = 102-poleDetection.x, distanceError = poleDetection.width-65;
-                double power = error/350, distancePower = distanceError/350;
-                move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
-                telemetry.addData("error", error);
-                telemetry.addData("distance_error", distanceError);
-                telemetry.update();
-                sleep(100);
-            }
         }
     }
 }
