@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.wrappers.Controller;
 import org.firstinspires.ftc.teamcode.wrappers.DetectPoleDisplay;
 import org.firstinspires.ftc.teamcode.wrappers.MecanumChassis;
 import org.firstinspires.ftc.teamcode.wrappers.Position;
+import org.firstinspires.ftc.teamcode.wrappers.Utils;
 import org.firstinspires.ftc.teamcode.wrappers.Vision;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -21,6 +22,8 @@ public class oneperson extends LinearOpMode {
     private DetectPoleDisplay poleDetection;
     private WebcamName webcamName;
     private OpenCvCamera camera;
+    private Utils.RotateWithTrackpad rotateWithTrackpad;
+
     private double clamp(double min, double max, double val) {
         if (val<min) return min;
         else if (val>max) return max;
@@ -44,6 +47,7 @@ public class oneperson extends LinearOpMode {
             @Override
             public void onError(int errorCode) {}
         });
+        double sensitivty = 1.0;
         waitForStart();
         setArmPosition(20, 0.3);
         while (opModeIsActive()) {
@@ -52,7 +56,16 @@ public class oneperson extends LinearOpMode {
             telemetry.addData("Position Data", String.format("%.2f %.2f %.2f",pos.x,pos.y,pos.angle));
             telemetry.update();
             double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x, ry = gamepad1.right_trigger;
+            lx *= sensitivty;
+            ly *= sensitivty;
+            rx *= sensitivty;
+            ry *= sensitivty;
             double dn = 0.6/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
+            double rotation = rotateWithTrackpad.getMoveX() / 30;
+            // rotating
+            rx += rotation;
+            // strafing
+            // lx += rotation;
             robot.fr.setPower((ly+lx+rx)*dn);
             robot.fl.setPower((ly-lx-rx)*dn);
             robot.br.setPower((ly-lx-rx)*dn);
@@ -65,8 +78,18 @@ public class oneperson extends LinearOpMode {
                 setArmPosition(currentArmPosition, ((am > 0f) ? 0.3 : 0.14));
                 // check if arm is actually moving tho :l
             }
+            if(gamepad1.triangle || gamepad1.y){
+                // arm go up
+                currentArmPosition = 510;
+                setArmPosition(currentArmPosition, 0.3);
+            }
+            if(gamepad1.dpad_up){
+                // arm go down
+                currentArmPosition = 0;
+                setArmPosition(currentArmPosition, 0.2);
+            }
             // ===== reset arm encoders
-            if (gamepad1.dpad_left) {
+            if (gamepad1.dpad_right) {
                 currentArmPosition = 0;
                 robot.leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -74,6 +97,8 @@ public class oneperson extends LinearOpMode {
             // ===== opening arm handle thing
             if (gamepad1.left_bumper) robot.intake.setPosition(0.55);
             else robot.intake.setPosition(0.8);
+            // ===== sensitivty
+            sensitivty = rotateWithTrackpad.getMoveX() / 2 + 1;
         }
     }
     private void setArmPosition(int pos, double speed) {
