@@ -13,11 +13,11 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.List;
 
 public class DetectPoleDisplay extends OpenCvPipeline {
-    private static final Scalar lower_yellow = new Scalar(15,120,120),
-                                upper_yellow = new Scalar(35,255,255),
+    private static final Scalar lower_yellow = new Scalar(15,130,70),
+                                upper_yellow = new Scalar(35,255,245),
                                 lower_red1 = new Scalar(0, 80, 80),
-                                upper_red1 = new Scalar(15, 255, 255),
-                                lower_red2 = new Scalar(165, 80, 80),
+                                upper_red1 = new Scalar(5, 255, 255),
+                                lower_red2 = new Scalar(175, 80, 80),
                                 upper_red2 = new Scalar(180, 255, 255),
                                 lower_blue = new Scalar(95, 80, 80),
                                 upper_blue = new Scalar(125, 255, 255);

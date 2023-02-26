@@ -6,9 +6,9 @@ public class Controller {
     private final double MIN_VELOCITY = 0.05;
     private final double ACCELERATE = 0.5;
 
-    private final double ANGLE_MAX_VELOCITY = 180;
+    private final double ANGLE_MAX_VELOCITY = 220;
     private final double ANGLE_MIN_VELOCITY = 2;
-    private final double ANGLE_ACCELERATE = 25;
+    private final double ANGLE_ACCELERATE = 40;
 
     private final double WHEEL_ANGLE = 678.0/892.0;
     private final double ROBOT_LENGTH = 0.114;
@@ -16,7 +16,7 @@ public class Controller {
 
     private final double BRAKE_DISTANCE = 0.7;
     private final double BRAKE_DISTANCE_RATIO = (MAX_VELOCITY-MIN_VELOCITY)/BRAKE_DISTANCE;
-    private final double BRAKE_ANGLE = 70;
+    private final double BRAKE_ANGLE = 30;
     private final double BRAKE_ANGLE_RATIO = (ANGLE_MAX_VELOCITY-ANGLE_MIN_VELOCITY)/BRAKE_ANGLE;
 
     private MecanumChassis robot;
@@ -42,6 +42,12 @@ public class Controller {
         this.velocityControl = velocityControl;
         this.finished = false;
         controllerThread.start();
+    }
+    public void updatePos(double x, double y, double angle, boolean velocityControl) {
+        this.x = x;
+        this.y = y;
+        this.angle = angle;
+        this.velocityControl = velocityControl;
     }
     public void stop() {
         controllerThread.interrupt();

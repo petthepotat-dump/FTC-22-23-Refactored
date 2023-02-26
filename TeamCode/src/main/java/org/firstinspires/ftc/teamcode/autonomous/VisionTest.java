@@ -20,8 +20,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 public class VisionTest extends LinearOpMode {
     private OpenCvCamera camera;
     private FtcDashboard dashboard = FtcDashboard.getInstance();
-    private DetectConeDisplay detection = new DetectConeDisplay(true);
+//    private DetectConeDisplay detection = new DetectConeDisplay(true);
     private DetectPoleDisplay poleDetection = new DetectPoleDisplay();
+    private DisplayVision detection = new DisplayVision();
     private MecanumChassis robot;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -43,18 +44,17 @@ public class VisionTest extends LinearOpMode {
             }
         });
         while (!isStarted()) {
-//            telemetry.addData("hue", detection.hsvColor[0]);
-//            telemetry.addData("Saturation", detection.hsvColor[1]);
-//            telemetry.addData("Value", detection.hsvColor[2]);
-            telemetry.addData("x", poleDetection.x);
-            telemetry.addData("y", poleDetection.y);
-            telemetry.addData("height", poleDetection.height);
-            telemetry.addData("width", poleDetection.width);
+            telemetry.addData("hue", detection.hsvColor[0]);
+            telemetry.addData("Saturation", detection.hsvColor[1]);
+            telemetry.addData("Value", detection.hsvColor[2]);
+//            telemetry.addData("x", poleDetection.x);
+//            telemetry.addData("y", poleDetection.y);
+//            telemetry.addData("height", poleDetection.height);
+//            telemetry.addData("width", poleDetection.width);
 
             telemetry.update();
             sleep(200);
         }
-        goToCone();
         camera.closeCameraDeviceAsync(() -> {
             dashboard.stopCameraStream();
         });
@@ -64,40 +64,5 @@ public class VisionTest extends LinearOpMode {
         robot.fl.setPower(fl);
         robot.br.setPower(br);
         robot.bl.setPower(bl);
-    }
-    private void goToCone() {
-        while (detection.x<118 || detection.x>128 || detection.width<150) {
-            double error = 123-detection.x, distanceError = detection.width-150;
-            double power = error/250, distancePower = distanceError/250;
-            move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
-            telemetry.addData("error", error);
-            telemetry.addData("distance_error", distanceError);
-            telemetry.update();
-            sleep(100);
-        }
-    }
-    private void goToPole(boolean cone) {
-        poleDetection.poleHasCone(cone);
-        if (cone) {
-            while (poleDetection.x<118 || poleDetection.x>128 || poleDetection.width<150) {
-                double error = 123-poleDetection.x, distanceError = poleDetection.width-150;
-                double power = error/250, distancePower = distanceError/250;
-                move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
-                telemetry.addData("error", error);
-                telemetry.addData("distance_error", distanceError);
-                telemetry.update();
-                sleep(100);
-            }
-        } else {
-            while (poleDetection.x<97 || poleDetection.x>107 || poleDetection.width<60) {
-                double error = 102-poleDetection.x, distanceError = poleDetection.width-60;
-                double power = error/250, distancePower = distanceError/250;
-                move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
-                telemetry.addData("error", error);
-                telemetry.addData("distance_error", distanceError);
-                telemetry.update();
-                sleep(100);
-            }
-        }
     }
 }

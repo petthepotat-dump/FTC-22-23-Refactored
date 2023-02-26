@@ -13,21 +13,28 @@ import java.util.List;
 
 public class DetectConeDisplay extends OpenCvPipeline {
     private static final Scalar
-            lower_blue = new Scalar(100,100,100),
-            upper_blue = new Scalar(120,255,255),
-            lower_red = new Scalar(90,100,100),
-            upper_red = new Scalar(110,255,255);
+            lower_blue = new Scalar(100,60,80),
+            upper_blue = new Scalar(125,255,255),
+            lower_red1 = new Scalar(165,80,100),
+            upper_red1 = new Scalar(180,255,255),
+            lower_red2 = new Scalar(0, 80, 100),
+            upper_red2 = new Scalar(5, 80, 100);
     private Mat hsv = new Mat(), mask = new Mat(), hierarchy = new Mat();
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
     private boolean blueTeam;
-    public double x, y, width, height;
+    public double x, y, width, height, left, right;
     public double[] hsvColor = new double[3];
     public DetectConeDisplay(boolean blue_team) { blueTeam = blue_team;}
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
         if (blueTeam) Core.inRange(hsv, lower_blue, upper_blue, mask);
-        else Core.inRange(hsv, lower_red, upper_red, mask);
+        else {
+            Mat red = new Mat();
+            Core.inRange(hsv, lower_red1, upper_red1, red);
+            Core.inRange(hsv, lower_red2, upper_red2, mask);
+            Core.bitwise_or(red, mask, mask);
+        }
         Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.circle(input, new Point(input.width() / 2, input.height() / 2), 5, new Scalar(0, 0, 255), 2);
         hsvColor = hsv.get(input.height() / 2, input.width() / 2);
@@ -50,6 +57,8 @@ public class DetectConeDisplay extends OpenCvPipeline {
             y = rect.y+rect.height/2;
             width = rect.width;
             height = rect.height;
+            left = rect.x;
+            right = rect.x+rect.width;
         }
         contours.clear();
         return input;

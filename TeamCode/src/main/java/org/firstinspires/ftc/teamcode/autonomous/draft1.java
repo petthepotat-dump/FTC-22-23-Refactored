@@ -31,7 +31,7 @@ public class draft1 extends BaseAuto {
         while (count > 0 && !timerThread.done){
             // === go cycle speed -- go towards cone stack
             goTo(-0.4, 1.0, -90, 2.3, 90, 0.12, 9, true);
-            goToCone();
+            goToCone(90);
 
             // approaching stack
             goToRel(-0.3, -0.1, pos.angle - -90, 0.5, 0, 0.12, 9, true);

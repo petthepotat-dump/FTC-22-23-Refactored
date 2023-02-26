@@ -39,6 +39,7 @@ public class teleop extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
         int currentArmPosition=0;
+        boolean toggleDown = true;
         robot = new MecanumChassis(hardwareMap);
         pos = new Position(robot);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -62,41 +63,42 @@ public class teleop extends LinearOpMode {
             telemetry.addData("Position Data", String.format("%.2f %.2f %.2f",pos.x,pos.y,pos.angle));
             telemetry.update();
             double lx = gamepad1.left_stick_x, ly = gamepad1.left_stick_y, rx = gamepad1.right_stick_x, ry = gamepad2.right_stick_y;
-            double dn = 0.6/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
-            double rotation = rotateWithTrackpad.getMoveX() / 30;
-            // rotating
-            rx += rotation;
-            // strafing
-            // lx += rotation;
+            double dn = 0.8/Math.max(Math.abs(lx)+0.7*Math.abs(rx)+Math.abs(ly),1);
             robot.fr.setPower((ly+lx+0.7*rx)*dn);
             robot.fl.setPower((ly-lx-0.7*rx)*dn);
             robot.br.setPower((ly-lx+0.7*rx)*dn);
             robot.bl.setPower((ly+lx-0.7*rx)*dn);
             if (gamepad2.dpad_up) {
-                currentArmPosition = 520;
+                currentArmPosition = 510;
                 setArmPosition(currentArmPosition, 0.3);
-            } else if (gamepad2.b) {
+            } else if (gamepad2.dpad_left) {
                 currentArmPosition = 365;
                 setArmPosition(currentArmPosition, 0.3);
-            } else if (gamepad2.y) {
-                currentArmPosition = 260;
-                setArmPosition(currentArmPosition, 0.3);
-            } else if (gamepad2.x) {
-                currentArmPosition = 70;
+            } else if (gamepad2.dpad_right) {
+                currentArmPosition = 230;
                 setArmPosition(currentArmPosition, 0.3);
             } else if (gamepad2.dpad_down) {
-                currentArmPosition = 20;
+                currentArmPosition = 0;
                 setArmPosition(currentArmPosition, 0.2);
-            } else if (gamepad2.dpad_left) {
+            } else if (gamepad2.x) {
                 currentArmPosition = 0;
                 robot.leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             } else if (Math.abs(ry)>0.1) {
-                currentArmPosition=(int)clamp(-200,520,robot.leftArm.getCurrentPosition()-35*ry);
+                currentArmPosition=(int)clamp(-200,510,robot.leftArm.getCurrentPosition()-35*ry);
                 setArmPosition(currentArmPosition,Math.abs(ry)*(ry>0?0.15:0.25));
             }
             if (gamepad2.left_bumper) robot.intake.setPosition(0.55);
             else robot.intake.setPosition(0.8);
+            if (gamepad2.right_bumper && toggleDown) {
+                currentArmPosition = Math.max(currentArmPosition-100, 0);
+                setArmPosition(currentArmPosition, 0.3);
+                toggleDown = false;
+            } else if ((!gamepad2.right_bumper) && (!toggleDown)) {
+                currentArmPosition = currentArmPosition + 100;
+                setArmPosition(currentArmPosition, 0.3);
+                toggleDown = true;
+            }
         }
     }
     private void setArmPosition(int pos, double speed) {

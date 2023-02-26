@@ -35,7 +35,7 @@ public class AutonLeft extends BaseAuto {
     public void runOpMode() throws InterruptedException {
         init(hardwareMap, true);
 
-        route = sleeveDetection.route;
+//        route = sleeveDetection.route;
         waitForStart();
 
         Utils.TimerThread timer = new Utils.TimerThread(PARKINGTIME);
@@ -57,7 +57,7 @@ public class AutonLeft extends BaseAuto {
         setArmPositionWait(400, 0.2);
         openIntake();
         telemetry.addData("Stage", "CYCLE!");
-
+        telemetry.update();
         if (STAGES < 2) return;
         // next
 
@@ -68,13 +68,15 @@ public class AutonLeft extends BaseAuto {
         int heightOfStack = 20*5;
         while(heightOfStack > 0) {
             // TODO I THINK WE NEED THIS
-            goTo(PIVOT1X,PIVOT1Y, 0, 0.2, 100, 0.04, 2, true);
+            telemetry.addData("height of stack", heightOfStack/20);
+            telemetry.update();
+            goTo(POS1X,POS1Y, -30, 0.4, 100, 0.04, 2, true);
             // then move towards left pylon stack
             setArmPosition(200,0.2);
-            goTo(POS2X+0.35, POS2Y, -90, 1.7, 100/*this was 300 and i think that breaks it*/, 0.04, 2, true);
-            goToCone();
+            goTo(POS2X+0.35, POS2Y+0.1, -90, 1.0, 100/*this was 300 and i think that breaks it*/, 0.04, 2, true);
+            goToCone(90);
             setArmPositionTiming(heightOfStack, 0.2, 300);
-            goTo(pos.x-0.21, pos.y, -90, 0.4, 1, 0.03, 5, true);
+            goTo(pos.x-0.11, pos.y, -90, 0.4, 1, 0.03, 5, true);
 
             // ------------- //
             // move the robot cycle-wise as many times as possible
@@ -82,8 +84,11 @@ public class AutonLeft extends BaseAuto {
             closeIntake();
             setArmPositionWait(100, 0.3);
             // move back a bit + spin around -- then move diagonal towards junction
+            goTo(POS2X+0.35, POS2Y+0.1, -90, 1.0, 100/*this was 300 and i think that breaks it*/, 0.04, 2, true);
+
             setArmPositionTiming(520, 0.3, 400);
-            goTo(PIVOT1X, PIVOT1Y, 50, 1.4, 300, 0.04, 2, true);
+//            goTo(PIVOT1X, PIVOT1Y, 50, 1.4, 300, 0.04, 2, true);
+            goTo(POS1X,POS1Y, 30, 0.4, 100, 0.04, 2, true);
 
             if (heightOfStack < 3*20) {
                 goToPole(true);
@@ -100,36 +105,36 @@ public class AutonLeft extends BaseAuto {
         // next
 
         // endgame movement
-        telemetry.addData("route: ", route);
-        telemetry.update();
-
-        // removed endgame movement
-        route = "NONE";
-
-        switch (route) {
-            case "LEFT":
-                goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
-                setArmPositionTiming(0, 0.2, 0);
-                goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
-                break;
-            case "CENTER":
-                goTo(0,1.35,0,1.8,200,0.04,15,true);
-                setArmPositionTiming(0, 0.2, 0);
-                goTo(0,0.9,0,1.2,150,0.04,2,true);
-                break;
-            case "RIGHT":
-                setArmPositionTiming(520, 0.2, 0);
-                goTo(0.6,1.4,0,1.8,200,0.04,15,true);
-                setArmPositionTiming(0, 0.2, 0);
-                goTo(0.6,0.9,0,1.2,150,0.04,2,true);
-                break;
-            default:
-                telemetry.addData("OH SHIT!","WE FUCKED UP!");
-                telemetry.update();
-                goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
-                setArmPositionTiming(0, 0.2, 0);
-                goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
-                break;
-        }
+//        telemetry.addData("route: ", route);
+//        telemetry.update();
+//
+//        // removed endgame movement
+//        route = "NONE";
+//
+//        switch (route) {
+//            case "LEFT":
+//                goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
+//                setArmPositionTiming(0, 0.2, 0);
+//                goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
+//                break;
+//            case "CENTER":
+//                goTo(0,1.35,0,1.8,200,0.04,15,true);
+//                setArmPositionTiming(0, 0.2, 0);
+//                goTo(0,0.9,0,1.2,150,0.04,2,true);
+//                break;
+//            case "RIGHT":
+//                setArmPositionTiming(520, 0.2, 0);
+//                goTo(0.6,1.4,0,1.8,200,0.04,15,true);
+//                setArmPositionTiming(0, 0.2, 0);
+//                goTo(0.6,0.9,0,1.2,150,0.04,2,true);
+//                break;
+//            default:
+//                telemetry.addData("OH SHIT!","WE FUCKED UP!");
+//                telemetry.update();
+//                goTo(-0.55,1.17,0,1.2, 200,0.04,2,true);
+//                setArmPositionTiming(0, 0.2, 0);
+//                goTo(-0.55,0.85,0,1.2, 200,0.04,2,true);
+//                break;
+//        }
     }
 }
