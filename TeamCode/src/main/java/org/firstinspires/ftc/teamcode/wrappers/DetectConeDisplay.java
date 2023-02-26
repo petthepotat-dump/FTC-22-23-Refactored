@@ -13,26 +13,33 @@ import java.util.List;
 
 public class DetectConeDisplay extends OpenCvPipeline {
     private static final Scalar
-            lower_blue = new Scalar(100,60,80),
-            upper_blue = new Scalar(125,255,255),
-            lower_red1 = new Scalar(165,80,100),
-            upper_red1 = new Scalar(180,255,255),
-            lower_red2 = new Scalar(0, 80, 100),
-            upper_red2 = new Scalar(5, 80, 100);
+            // blue
+            lowerBlue = new Scalar(100, 100, 160),
+            upperBlue = new Scalar(130, 180, 255),
+            // red
+            lowerRed1 = new Scalar(0, 100, 100),
+            upperRed1 = new Scalar(15, 255, 255),
+            lowerRed2 = new Scalar(165, 100, 100),
+            upperRed2 = new Scalar(180, 255, 255);
+
+//            lower_red1 = new Scalar(165,80,100),
+//            upper_red1 = new Scalar(180,255,255),
+//            lower_red2 = new Scalar(0, 80, 100),
+//            upper_red2 = new Scalar(5, 80, 100);
     private Mat hsv = new Mat(), mask = new Mat(), hierarchy = new Mat();
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
-    private boolean blueTeam;
+    public volatile static boolean blueTeam = false;
     public double x, y, width, height, left, right;
     public double[] hsvColor = new double[3];
     public DetectConeDisplay(boolean blue_team) { blueTeam = blue_team;}
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);
-        if (blueTeam) Core.inRange(hsv, lower_blue, upper_blue, mask);
+        if (blueTeam) Core.inRange(hsv, lowerBlue, upperBlue, mask);
         else {
             Mat red = new Mat();
-            Core.inRange(hsv, lower_red1, upper_red1, red);
-            Core.inRange(hsv, lower_red2, upper_red2, mask);
+            Core.inRange(hsv, lowerRed1, upperRed1, red);
+            Core.inRange(hsv, lowerRed2, upperRed2, mask);
             Core.bitwise_or(red, mask, mask);
         }
         Imgproc.findContours(mask, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);

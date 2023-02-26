@@ -49,6 +49,10 @@ public class oneperson extends LinearOpMode {
         });
         double sensitivty = 1.0;
         waitForStart();
+        while(!isStarted()){
+            telemetry.addData("Trackpad", rotateWithTrackpad.getMoveX());
+            telemetry.update();
+        }
         setArmPosition(20, 0.3);
         while (opModeIsActive()) {
             telemetry.addData("Servo Position ", robot.intake.getPosition());

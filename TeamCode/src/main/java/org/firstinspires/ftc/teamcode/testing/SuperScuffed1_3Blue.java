@@ -1,11 +1,15 @@
-package org.firstinspires.ftc.teamcode.autonomous;
+package org.firstinspires.ftc.teamcode.testing;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="RUNT HIS DURING GAME")
-public class auton extends BaseAuto {
+import org.firstinspires.ftc.teamcode.autonomous.BaseAuto;
+
+@Autonomous(name="1+3 Scuffed Blue LEFT")
+public class SuperScuffed1_3Blue extends BaseAuto {
     private String route = "NONE";
     public volatile static boolean blueTeam = true;
+
+    // faster editing
     @Override
     public void runOpMode() throws InterruptedException {
         init(hardwareMap, blueTeam);
@@ -21,7 +25,7 @@ public class auton extends BaseAuto {
         waitForStart();
         route = sleeveDetection.route;
         closeIntake();
-        // === place firs cone
+        /// === place firs cone
         sleep(1000);
         // ===== scuffed joining goto thingy
         control.goTo(-0.04, 1.14, 0 , 2.9, 120, 0.1, 6, false);
@@ -30,11 +34,10 @@ public class auton extends BaseAuto {
         // move towards blob
         control.updatePos(0.1, 1.27, 0, true);
         while (!control.finished) sleep(80);
-        goTo(-0.03, 1.24, 45, 2.9, 60, 0.05, 3, true);
+        goTo(-0.03, 1.24, 55, 2.9, 60, 0.05, 7, true);
 //        goTo(0.07, 1.26, 45, 2.6, 90, 0.2, 8, false);
         // ====== cycle time -- starting from center position
-        // TODO - pdate befor eyou upload -- change # of cycle times
-        for (int i=0; i<0; i++) {
+        for (int i=0; i<1; i++) {
             // === move towards teh pole
             goToPole(false);
             pos.updatePos(0.12, 1.39);
@@ -57,7 +60,7 @@ public class auton extends BaseAuto {
             setArmPosition(520, 0.15);
             control.goTo(-0.03, 1.2, 0, 2.5, 240, 0.05, 5, false);
             sleep(500);
-            control.updatePos(-0.03, 1.24, 55, true);
+            control.updatePos(-0.03, 1.24, 45, true);
             while(!control.finished) sleep(80);
         }
         // === place final cone
@@ -73,7 +76,7 @@ public class auton extends BaseAuto {
             case "LEFT":
                 sleep(200);
                 setArmPosition(0, 0.4);
-                goTo(-0.45, 1.23, -90,2.4, 170, 0.3, 10,true);
+                goTo(-0.58, 1.23, -90,2.4, 170, 0.3, 10,true);
 //                while (!control.finished) sleep(50);
                 break;
             case "CENTER":

@@ -16,10 +16,10 @@ public class DisplayVision extends OpenCvPipeline {
             lower_orange1 = new Scalar(175,60,100),
             upper_orange1 = new Scalar(180,235,255),
             lower_orange2 = new Scalar(0, 60, 100),
-            upper_orange2 = new Scalar(5, 100, 100),
-            lower_blue = new Scalar(95,40,40),
-            upper_blue = new Scalar(105,235,255),
-            lower_purple = new Scalar(140,100,100),
+            upper_orange2 = new Scalar(10, 235, 255),
+            lower_blue = new Scalar(80,10,120),
+            upper_blue = new Scalar(105,200,255),
+            lower_purple = new Scalar(128,60,100),
             upper_purple = new Scalar(150,255,255);
     private Mat hsv = new Mat(), colour = new Mat(), mask = new Mat(), hierarchy = new Mat();
     private List<MatOfPoint> contours = new java.util.ArrayList<>();

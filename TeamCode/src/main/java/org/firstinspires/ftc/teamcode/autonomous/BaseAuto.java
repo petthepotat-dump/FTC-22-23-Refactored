@@ -21,7 +21,7 @@ public abstract class BaseAuto extends LinearOpMode {
     public MecanumChassis robot;
     public Position pos;
     public Controller control;
-    public DisplayVision sleeveDetection;
+    public Vision sleeveDetection;
     public DetectPoleDisplay poleDetection;
     public DetectConeDisplay coneDetection;
     public WebcamName webcamName;
@@ -35,9 +35,10 @@ public abstract class BaseAuto extends LinearOpMode {
         int cameraMonitorViewId = map.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcamName = hardwareMap.get(WebcamName.class, "Camera");
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
-        sleeveDetection = new DisplayVision();
+        sleeveDetection = new Vision();
         poleDetection = new DetectPoleDisplay();
         coneDetection = new DetectConeDisplay(blueTeam); // TODO depends on team
+        // TODO -- FIRST DO SLEEVE FOR FINDING ROUTE
         camera.setPipeline(sleeveDetection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -100,8 +101,8 @@ public abstract class BaseAuto extends LinearOpMode {
         camera.setPipeline(coneDetection);
         while (coneDetection.x<113 || coneDetection.x>133 || coneDetection.width<150) {
             double error = 123-coneDetection.x, distanceError = coneDetection.width-150;
-            double power = error/310, distancePower = distanceError/350;
-            if (coneDetection.left < 4 || coneDetection.right > 236) move(-power+0.05, power+0.05, power+0.05, -power+0.05);
+            double power = error/320, distancePower = distanceError/360;
+            if (coneDetection.left < 4 || coneDetection.right > 236) move(-power+0.03, power+0.03, power+0.03, -power+0.03);
             move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
             telemetry.addData("error", error);
             telemetry.addData("distance_error", distanceError);
@@ -111,7 +112,7 @@ public abstract class BaseAuto extends LinearOpMode {
         setArmPosition(armPos, 0.4);
         double ticks = robot.fr.getCurrentPosition();
         move(-0.08, -0.08, -0.08, -0.08);
-        while (ticks-robot.fr.getCurrentPosition()<150) sleep(50);
+        while (ticks-robot.fr.getCurrentPosition()<170) sleep(50);
         move(0,0,0,0);
 
     }
@@ -119,8 +120,8 @@ public abstract class BaseAuto extends LinearOpMode {
         camera.setPipeline(poleDetection);
         poleDetection.poleHasCone(cone);
         if (cone) {
-            while (poleDetection.x<118 || poleDetection.x>128 || poleDetection.width<150) {
-                double error = 123-poleDetection.x, distanceError = poleDetection.width-150;
+            while (poleDetection.x<118 || poleDetection.x>128 || poleDetection.width<160) {
+                double error = 123-poleDetection.x, distanceError = poleDetection.width-160;
                 double power = error/350, distancePower = distanceError/300;
                 move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
                 telemetry.addData("error", error);
@@ -133,10 +134,10 @@ public abstract class BaseAuto extends LinearOpMode {
             while (ticks-robot.fr.getCurrentPosition()<140) sleep(50);
             move(0,0,0,0);
         } else {
-            while (poleDetection.x<85 || poleDetection.x>119 || poleDetection.width<60) {
-                double error = 102-poleDetection.x, distanceError = poleDetection.width-60;
+            while (poleDetection.x<85 || poleDetection.x>119 || poleDetection.width<65) {
+                double error = 102-poleDetection.x, distanceError = poleDetection.width-65;
                 double power = error/270, distancePower = distanceError/340;
-                power = Math.signum(power)*Math.max(Math.min(Math.abs(power), 0.13), 0.06);
+                power = Math.signum(power)*Math.max(Math.min(Math.abs(power), 0.13), 0.04);
                 distancePower = Math.signum(distancePower)*Math.max(Math.abs(distancePower), 0.05);
                 move(-power+distancePower, power+distancePower, power+distancePower, -power+distancePower);
                 telemetry.addData("error", error);

@@ -85,8 +85,8 @@ public class teleop extends LinearOpMode {
                 robot.leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             } else if (Math.abs(ry)>0.1) {
-                currentArmPosition=(int)clamp(-200,510,robot.leftArm.getCurrentPosition()-35*ry);
-                setArmPosition(currentArmPosition,Math.abs(ry)*(ry>0?0.15:0.25));
+                currentArmPosition=(int)clamp(-200,520,robot.leftArm.getCurrentPosition()-45*ry);
+                setArmPosition(currentArmPosition,Math.abs(ry)*(ry>0?0.25:0.4));
             }
             if (gamepad2.left_bumper) robot.intake.setPosition(0.55);
             else robot.intake.setPosition(0.8);

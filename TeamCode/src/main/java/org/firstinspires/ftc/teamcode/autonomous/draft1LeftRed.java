@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="RUNT HIS DURING GAME")
-public class auton extends BaseAuto {
+@Autonomous(name="RedLeft")
+public class draft1LeftRed extends BaseAuto {
     private String route = "NONE";
-    public volatile static boolean blueTeam = true;
+    public volatile static boolean blueTeam = false;
     @Override
     public void runOpMode() throws InterruptedException {
         init(hardwareMap, blueTeam);
@@ -30,11 +30,10 @@ public class auton extends BaseAuto {
         // move towards blob
         control.updatePos(0.1, 1.27, 0, true);
         while (!control.finished) sleep(80);
-        goTo(-0.03, 1.24, 45, 2.9, 60, 0.05, 3, true);
+        goTo(-0.03, 1.24, 55, 2.9, 60, 0.05, 7, true);
 //        goTo(0.07, 1.26, 45, 2.6, 90, 0.2, 8, false);
         // ====== cycle time -- starting from center position
-        // TODO - pdate befor eyou upload -- change # of cycle times
-        for (int i=0; i<0; i++) {
+        for (int i=0; i<1; i++) {
             // === move towards teh pole
             goToPole(false);
             pos.updatePos(0.12, 1.39);
@@ -73,7 +72,7 @@ public class auton extends BaseAuto {
             case "LEFT":
                 sleep(200);
                 setArmPosition(0, 0.4);
-                goTo(-0.45, 1.23, -90,2.4, 170, 0.3, 10,true);
+                goTo(-0.58, 1.23, -90,2.4, 170, 0.3, 10,true);
 //                while (!control.finished) sleep(50);
                 break;
             case "CENTER":

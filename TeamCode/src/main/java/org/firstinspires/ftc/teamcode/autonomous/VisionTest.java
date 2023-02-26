@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.wrappers.DetectCone;
 import org.firstinspires.ftc.teamcode.wrappers.DetectConeDisplay;
 import org.firstinspires.ftc.teamcode.wrappers.DetectPole;
 import org.firstinspires.ftc.teamcode.wrappers.DetectPoleDisplay;
@@ -21,8 +22,11 @@ public class VisionTest extends LinearOpMode {
     private OpenCvCamera camera;
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 //    private DetectConeDisplay detection = new DetectConeDisplay(true);
-    private DetectPoleDisplay poleDetection = new DetectPoleDisplay();
-    private DisplayVision detection = new DisplayVision();
+
+    // TODO create auto modes for all red / blue team AND left/right side gaMes
+    private DetectConeDisplay coneDetect = new DetectConeDisplay(false);
+//    private DisplayVision detection = new DisplayVision();
+    private Vision detection = new Vision();
     private MecanumChassis robot;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -30,8 +34,9 @@ public class VisionTest extends LinearOpMode {
         telemetry = dashboard.getTelemetry();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Camera"), cameraMonitorViewId);
-        poleDetection.poleHasCone(false);
-        camera.setPipeline(detection);
+//        poleDetection.poleHasCone(false);
+        camera.setPipeline(coneDetect);
+//        camera.setPipeline(detection);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -44,9 +49,15 @@ public class VisionTest extends LinearOpMode {
             }
         });
         while (!isStarted()) {
-            telemetry.addData("hue", detection.hsvColor[0]);
-            telemetry.addData("Saturation", detection.hsvColor[1]);
-            telemetry.addData("Value", detection.hsvColor[2]);
+
+//            telemetry.addData("hue", detection.hsvColor[0]);
+//            telemetry.addData("Saturation", detection.hsvColor[1]);
+//            telemetry.addData("Value", detection.hsvColor[2]);
+            telemetry.addData("hue", coneDetect.hsvColor[0]);
+            telemetry.addData("Saturation", coneDetect.hsvColor[1]);
+            telemetry.addData("Value", coneDetect.hsvColor[2]);
+            // output color
+//            telemetry.addData("Route", detection.route);
 //            telemetry.addData("x", poleDetection.x);
 //            telemetry.addData("y", poleDetection.y);
 //            telemetry.addData("height", poleDetection.height);
