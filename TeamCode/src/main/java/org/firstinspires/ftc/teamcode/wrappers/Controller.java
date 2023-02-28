@@ -19,6 +19,8 @@ public class Controller {
     private final double BRAKE_ANGLE = 30;
     private final double BRAKE_ANGLE_RATIO = (ANGLE_MAX_VELOCITY-ANGLE_MIN_VELOCITY)/BRAKE_ANGLE;
 
+    // ============================================================================== //
+
     private MecanumChassis robot;
     private Position pos;
     private Controller.ControllerThread controllerThread;

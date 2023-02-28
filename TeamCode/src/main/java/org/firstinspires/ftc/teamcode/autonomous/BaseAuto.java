@@ -26,7 +26,7 @@ public abstract class BaseAuto extends LinearOpMode {
     public DetectConeDisplay coneDetection;
     public WebcamName webcamName;
     public OpenCvCamera camera;
-    public FtcDashboard dashboard = FtcDashboard.getInstance();
+    public static FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public void init(HardwareMap map, boolean blueTeam){
         robot = new MecanumChassis(map);
@@ -150,5 +150,9 @@ public abstract class BaseAuto extends LinearOpMode {
     }
     @Override
     public abstract void runOpMode() throws InterruptedException;
+
+
+
+
 
 }

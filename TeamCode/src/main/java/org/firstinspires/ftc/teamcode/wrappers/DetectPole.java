@@ -13,12 +13,20 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.List;
 
 public class DetectPole extends OpenCvPipeline {
-    private static final Scalar lower_yellow = new Scalar(7,50,50), upper_yellow = new Scalar(28,255,255);
-    private Mat mask = new Mat(), res = new Mat(), edges = new Mat(), lines = new Mat();
+    private static final Scalar
+            lower_yellow = new Scalar(7,50,50),
+            upper_yellow = new Scalar(28,255,255);
+    private Mat mask = new Mat(),
+            res = new Mat(),
+            edges = new Mat(),
+            lines = new Mat();
     private final double polePosition = 83, targetWidth = 34.5;
     private double maxWidth=0, max_x=0;
     public double error=0, widthError=0;
     public int noPole=0;
+
+    // ============================================================================== //
+
     private void quicksort(Mat lines, int low, int high) {
         if (low < high) {
             int pi = partition(lines, low, high);

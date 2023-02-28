@@ -12,6 +12,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.List;
 
 public class Vision extends OpenCvPipeline {
+
     private static final Scalar
             lower_yellow = new Scalar(25,120,140),
             upper_yellow = new Scalar(40,220,255),
@@ -19,13 +20,20 @@ public class Vision extends OpenCvPipeline {
             upper_cyan = new Scalar(113,170,255),
             lower_magenta = new Scalar(160,100,180),
             upper_magenta = new Scalar(170,180,255);
-
-    private Mat yellow = new Mat(), hsv = new Mat(), cyan = new Mat(), magenta = new Mat(), mask = new Mat(), hierarchy = new Mat();
-    private Mat buffer = new Mat();
+    private Mat yellow = new Mat(),
+            hsv = new Mat(),
+            cyan = new Mat(),
+            magenta = new Mat(),
+            mask = new Mat(),
+            hierarchy = new Mat(),
+            buffer = new Mat();
     public double[] hsvColor = new double[3];
 
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
     public String route = "OH SHIT!";
+
+    // ============================================================================== //
+
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);

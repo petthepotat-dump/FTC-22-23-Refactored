@@ -22,12 +22,15 @@ public class DetectCone extends OpenCvPipeline {
         lowerRed = new Scalar(0, 100, 100),
         upperRed = new Scalar(15, 255, 255);
 
-        private Mat red = new Mat(), blue = new Mat(), hsv = new Mat();
-        private double maxArea;
-        private Rect rect;
-        private boolean team;
-        public volatile double x=0, y=0, width=0, height=0;
+    private Mat red = new Mat(), blue = new Mat(), hsv = new Mat();
+    private double maxArea;
+    private Rect rect;
+    private boolean team;
+    public volatile double x=0, y=0, width=0, height=0;
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
+
+    // ============================================================================== //
+
     public DetectCone(boolean blueTeam) { team = blueTeam; }
     @Override
     public Mat processFrame(Mat input) {

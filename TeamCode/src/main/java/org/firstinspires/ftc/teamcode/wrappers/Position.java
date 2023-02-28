@@ -12,6 +12,8 @@ public class Position {
     public double fr, fl, bl, br;
     public volatile double angle, x, y;
 
+    // ============================================================================== //
+
     public Position(MecanumChassis robot) {
         this.robot = robot;
         positionThread = new PositionThread();

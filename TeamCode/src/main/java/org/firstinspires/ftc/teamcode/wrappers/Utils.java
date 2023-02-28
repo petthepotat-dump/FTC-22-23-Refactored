@@ -6,6 +6,9 @@ import java.util.Timer;
 
 public class Utils {
 
+    // ============================================================================== //
+    // base timer class
+
     public static class Timer{
         public long start, end, delta, cstart;
         public Timer(){
@@ -24,6 +27,9 @@ public class Utils {
             return (int) (end - cstart);
         }
     }
+
+    // ============================================================================== //
+    // keeping track of time
 
     public static class TimerThread extends Thread {
         private Timer timer;
@@ -49,6 +55,8 @@ public class Utils {
         }
     }
 
+    // ============================================================================== //
+    // pylon stacker tracker
 
     public static class PylonStackTracker{
         int stack = 28, counter = 5, cone = 5;
@@ -62,6 +70,9 @@ public class Utils {
         }
 
     }
+
+    // ============================================================================== //
+    // trackpad controls
 
     public static class TrackPad {
         private Gamepad gamepad;

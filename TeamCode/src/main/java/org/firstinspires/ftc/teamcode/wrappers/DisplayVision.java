@@ -21,10 +21,14 @@ public class DisplayVision extends OpenCvPipeline {
             upper_blue = new Scalar(105,200,255),
             lower_purple = new Scalar(128,60,100),
             upper_purple = new Scalar(150,255,255);
+
     private Mat hsv = new Mat(), colour = new Mat(), mask = new Mat(), hierarchy = new Mat();
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
     public String route = "NONE";
     public double[] hsvColor = new double[3];
+
+    // ============================================================================== //
+
     @Override
     public Mat processFrame(Mat input) {
         Imgproc.cvtColor(input, hsv, Imgproc.COLOR_RGB2HSV);

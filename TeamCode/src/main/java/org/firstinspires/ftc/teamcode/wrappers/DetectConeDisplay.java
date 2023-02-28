@@ -22,15 +22,14 @@ public class DetectConeDisplay extends OpenCvPipeline {
             lowerRed2 = new Scalar(165, 100, 100),
             upperRed2 = new Scalar(180, 255, 255);
 
-//            lower_red1 = new Scalar(165,80,100),
-//            upper_red1 = new Scalar(180,255,255),
-//            lower_red2 = new Scalar(0, 80, 100),
-//            upper_red2 = new Scalar(5, 80, 100);
     private Mat hsv = new Mat(), mask = new Mat(), hierarchy = new Mat();
     private List<MatOfPoint> contours = new java.util.ArrayList<>();
     public volatile static boolean blueTeam = false;
     public double x, y, width, height, left, right;
     public double[] hsvColor = new double[3];
+
+    // ============================================================================== //
+
     public DetectConeDisplay(boolean blue_team) { blueTeam = blue_team;}
     @Override
     public Mat processFrame(Mat input) {
